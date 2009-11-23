@@ -9,11 +9,12 @@
         $.fn.translate = function() {
           this.each(function() {
             var obj = $(this)
+            var original_text = obj.html()
             if(!obj.hasClass('translated')) {
               google.language.translate(
                   obj.html(), "", CONFIG.language || "en", function(result) {
                 if (!result.error) {
-                  obj.html(result.translation);
+                  obj.html(result.translation + '&#160;&#160;<span style="font-size: 12px; color: #666;">(' + original_text + ')</span>');
                   obj.addClass('translated');
                 }
               });
