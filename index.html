@@ -2,6 +2,37 @@
   <head>
     <link rel="stylesheet" href="style.css" type="text/css"/>
     <script src="jquery-1.2.6.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("language", "1");
+      (function($){
+        $.fn.translate = function() {
+          this.each(function() {
+            var obj = $(this)
+            if(!obj.hasClass('translated')) {
+              google.language.translate(
+                  obj.html(), "", CONFIG.language || "en", function(result) {
+                if (!result.error) {
+                  obj.html(result.translation);
+                  obj.addClass('translated');
+                }
+              });
+            }
+          })
+        }
+        
+        $(document).ready(function() {
+          initTranslation = function() {
+            $('td.msg-text').translate();
+            setTimeout('initTranslation()', 500);
+          }
+          $('#connectButton').click(function() {
+            CONFIG.language = $('#language').val();
+          })
+          setTimeout("initTranslation()", 500);
+        })
+      })(jQuery);
+    </script>
     <script src="client.js" type="text/javascript"></script>
     <title>node chat</title>
   </head>
@@ -10,14 +41,21 @@
       <div id="connect">
         <form action="#">
           <fieldset> 
-            <p>
+            <!--p>
               This is a chat room. Both the client-side and server-side are
               written in javascript. The source code is
               <a href="http://github.com/ry/node_chat/tree/master">here</a>.
-            </p>
+            </p-->
 
             <label for="nick">Name</label>
             <input id="nickInput" class="text"type="text" name="nick" value=""/>
+            <br />
+            <label for="nick">Your native language:</label>
+            <select id="language" name="nick">
+              <option value="en">English</option>
+              <option value="ru">Russian</option>              
+            </select>
+            <br />
             <input id="connectButton" class="button" type="submit" name="" value="Join"/>
 
           </fieldset>
